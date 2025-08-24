@@ -1,0 +1,206 @@
+---
+title: "Introduction to SPDtrace: Efficient Learning of Differential Networks"
+author: "Mojtaba Nikahd, Seyed Abolfazl Motahari"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to SPDtrace}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5
+)
+```
+
+## Introduction
+
+The **SPDtrace** package implements the SPD-trace method for efficient learning of differential networks in multi-source non-paranormal graphical models. This package provides tools for differential network inference, simulation studies, and real-world applications in genomics and other high-dimensional data analysis.
+
+## Installation
+
+```{r install, eval = FALSE}
+# Install from CRAN (when available)
+install.packages("SPDtrace")
+
+# Or install from GitHub
+# devtools::install_github("yourusername/SPDtrace")
+```
+
+## Quick Start
+
+### Basic Usage
+
+The main function `SPDtrace()` provides a simple interface for differential network inference:
+
+```{r quick_start, eval = FALSE}
+library(SPDtrace)
+
+# Generate example data
+set.seed(123)
+n <- 100
+p <- 20
+
+# Create two covariance matrices
+Sigma_A <- diag(p) + 0.3 * (matrix(runif(p^2), p, p) > 0.8)
+Sigma_A <- (Sigma_A + t(Sigma_A)) / 2
+diag(Sigma_A) <- 1
+
+Sigma_B <- Sigma_A + 0.2 * (matrix(runif(p^2), p, p) > 0.9)
+Sigma_B <- (Sigma_B + t(Sigma_B)) / 2
+diag(Sigma_B) <- 1
+
+# Run SPD-trace
+result <- SPDtrace(CovA = Sigma_A, CovB = Sigma_B, sparsityLevel = 50)
+
+# View results
+print(result)
+summary(result)
+```
+
+### Understanding the Output
+
+The `SPDtrace()` function returns an object of class `SPDtrace_result` containing:
+
+- `solution_path`: List of solution path objects with knots and active sets
+- `differential_network`: Adjacency matrix of the inferred differential network
+- `lambda_sequence`: Sequence of regularization parameters
+- `method`: Method used for inference
+- `call`: Function call
+
+## Core Functions
+
+### 1. Main Inference Function
+
+```{r main_function, eval = FALSE}
+# Basic usage
+result <- SPDtrace(CovA, CovB, sparsityLevel = 30)
+
+# With different methods
+result_spd <- SPDtrace(CovA, CovB, sparsityLevel = 30, method = "SPDtrace")
+result_cross <- SPDtrace(CovA, CovB, sparsityLevel = 30, method = "CrossFDTL")
+result_dtrace <- SPDtrace(CovA, CovB, sparsityLevel = 30, method = "DTrace")
+```
+
+### 2. Utility Functions
+
+The package provides several utility functions for data preprocessing and analysis:
+
+```{r utilities, eval = FALSE}
+# Convert Kendall's tau to Pearson correlation
+tau_matrix <- matrix(c(1, 0.5, 0.3, 0.5, 1, 0.4, 0.3, 0.4, 1), 3, 3)
+pearson_matrix <- kendall_tau_matrix_to_pearson_correlation_matrix(tau_matrix)
+
+# Ensure positive semi-definiteness
+A_psd <- positive_semi_definite_maker(A)
+
+# Estimate correlation from multiple datasets
+cor_matrix <- weighted_rank_based_pearson_correlation_estimator(datasets)
+```
+
+### 3. Simulation Functions
+
+Run simulation studies to evaluate method performance:
+
+```{r simulation, eval = FALSE}
+# First scenario: Performance comparison
+results_scenario1 <- run_first_scenario(
+  n_samples = 100, 
+  n_variables = 20, 
+  n_replicates = 10
+)
+
+# Second scenario: Robustness testing
+results_scenario2 <- run_second_scenario(
+  n_samples = 100, 
+  n_variables = 20, 
+  n_replicates = 10
+)
+```
+
+## Real-World Application: Ovarian Cancer
+
+The package includes real data from The Cancer Genome Atlas (TCGA) for ovarian cancer analysis:
+
+```{r real_data, eval = FALSE}
+# Load ovarian cancer data
+data("ov_gene_exp")
+data("ov_pi3k_akt_mtor")
+data("ov_wdtrace_mat")
+data("platinum_resistant_genes")
+
+# Analyze differential networks between platinum-sensitive and resistant tumors
+# (This would be implemented in a separate analysis script)
+```
+
+## Advanced Features
+
+### Model Selection
+
+The package supports various model selection strategies:
+
+```{r model_selection, eval = FALSE}
+# Use instability evaluation for model selection
+instability_results <- instability_evaluator_of_solution_paths(
+  solution_paths, 
+  number_of_nodes
+)
+
+# Fisher's test for biological validation
+enrichment_result <- fisher_test(
+  all_genes, 
+  hub_genes, 
+  functional_genes
+)
+```
+
+### Custom Methods
+
+You can implement custom differential network inference methods:
+
+```{r custom_methods, eval = FALSE}
+# The package is designed to be extensible
+# You can add new methods by implementing the required interface
+```
+
+## Performance Considerations
+
+### Memory Usage
+
+- For large networks (p > 1000), consider using sparse matrix representations
+- The C++ implementation provides efficient memory management
+- Use appropriate sparsity levels to control computational complexity
+
+### Parallelization
+
+- Simulation studies can be parallelized using the `parallel` package
+- Consider using `future` package for advanced parallel processing
+
+## Troubleshooting
+
+### Common Issues
+
+1. **C++ compilation errors**: Ensure Rtools (Windows) or Xcode (macOS) is properly installed
+2. **Memory issues**: Increase R memory limit or use garbage collection
+3. **Package dependencies**: Install all required packages from CRAN
+
+### Getting Help
+
+- Check the package documentation: `?SPDtrace`
+- View function examples: `example(SPDtrace)`
+- Report issues on the GitHub repository
+
+## References
+
+Nikahd, M., & Motahari, S. A. (2025). Efficient Learning of Differential Networks in Multi-Source Non-Paranormal Graphical Models. arXiv preprint arXiv:2410.02496.
+
+## Session Info
+
+```{r session_info, echo = FALSE}
+sessionInfo()
+```
