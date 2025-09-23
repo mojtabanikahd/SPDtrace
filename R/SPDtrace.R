@@ -65,6 +65,11 @@ SPDtrace <- function(CovA, CovB, sparsityLevel = NULL, method = "SPDtrace", verb
     stop("CovA and CovB must have the same dimensions")
   }
   
+  # Check for NA values
+  if (any(is.na(CovA)) || any(is.na(CovB))) {
+    stop("CovA and CovB cannot contain NA values")
+  }
+  
   if (is.null(sparsityLevel)) {
     sparsityLevel <- choose(nrow(CovA), 2) %/% 4  # Default to 25% of possible edges
   }
@@ -153,6 +158,70 @@ SPDtrace <- function(CovA, CovB, sparsityLevel = NULL, method = "SPDtrace", verb
   }
   
   return(output)
+}
+
+# Wrapper functions for different methods
+cross_fdtl_inference <- function(CovA, CovB, sparsityLevel) {
+  # For CrossFDTL, we need to set appropriate lambda and rho values
+  # This is a simplified wrapper - in practice you might want to tune these parameters
+  lambda <- 0.1  # Default lambda value
+  rho <- 0.5     # Default rho value
+  maxiter <- 100 # Default max iterations
+  
+  result <- CrossFDTL(CovA, CovB, lambda, rho, maxiter)
+  
+  # Convert the result to a network format
+  p <- nrow(CovA)
+  network <- matrix(0, p, p)
+  
+  if ("delta" %in% names(result)) {
+    delta_matrix <- result$delta
+    # Convert sparse matrix to adjacency matrix
+    if (inherits(delta_matrix, "sparseMatrix")) {
+      delta_matrix <- as.matrix(delta_matrix)
+    }
+    # Create binary network based on non-zero elements
+    network <- (abs(delta_matrix) > 1e-10) * 1
+    diag(network) <- 0  # Remove diagonal
+  }
+  
+  return(list(
+    network = network,
+    lambda = lambda,
+    method = "CrossFDTL"
+  ))
+}
+
+dtrace_inference <- function(CovA, CovB, sparsityLevel) {
+  # This is already implemented as inference_Dtrace_solution_path
+  result <- inference_Dtrace_solution_path(CovA, CovB, sparsityLevel)
+  
+  # Convert to network format
+  p <- nrow(CovA)
+  network <- matrix(0, p, p)
+  
+  if (length(result) > 0) {
+    # Use the last solution in the path
+    last_solution <- result[[length(result)]]
+    if ("active_set" %in% names(last_solution)) {
+      active_edges <- last_solution$active_set + 1  # Convert to 1-based indexing
+      for (edge_idx in active_edges) {
+        if (edge_idx <= p^2) {
+          row_idx <- ((edge_idx - 1) %% p) + 1
+          col_idx <- ((edge_idx - 1) %/% p) + 1
+          if (row_idx != col_idx) {
+            network[row_idx, col_idx] <- 1
+            network[col_idx, row_idx] <- 1
+          }
+        }
+      }
+    }
+  }
+  
+  return(list(
+    network = network,
+    method = "DTrace"
+  ))
 }
 
 #' Print method for SPDtrace results

@@ -98,9 +98,9 @@ List CrossFDTL(NumericMatrix CovA, NumericMatrix CovB,
       
       for(int i=0; i<nrow; i++){
         for(int j=i+1; j<ncol; j++){
-          if( (abs(dQ.at(i,j)) > lambda) | (Delta.at(i,j) != 0)){
+          if( (abs(dQ.at(i,j)) > lambda) || (Delta.at(i,j) != 0)){
             double a = A.at(i,i) + A.at(j,j);
-            double b = (A.row(i)*Delta.col(j)).at(0,0) + (A.row(j)*Delta.col(i)).at(0,0) + B.at(i,j) + B.at(j,i);
+            double b = arma::as_scalar(A.row(i)*Delta.col(j)) + arma::as_scalar(A.row(j)*Delta.col(i)) + B.at(i,j) + B.at(j,i);
             double c = Delta.at(i,j);
             
             double z = c-(b/a);
@@ -128,7 +128,7 @@ List CrossFDTL(NumericMatrix CovA, NumericMatrix CovB,
         
         double Armijo_rule_delta = arma::trace(dQ*D) + lambda*arma::accu(abs(Delta+D)) - lambda*arma::accu(abs(Delta));
         
-        if(LQ_Delta_tilde <= LQ_Delta | LQ_Delta_tilde <= LQ_Delta + 0.5*alpha*Armijo_rule_delta){
+        if(LQ_Delta_tilde <= LQ_Delta || LQ_Delta_tilde <= LQ_Delta + 0.5*alpha*Armijo_rule_delta){
           break;
         }
         k_Arimijo = k_Arimijo+1;
