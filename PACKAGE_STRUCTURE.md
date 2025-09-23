@@ -34,11 +34,7 @@ SPDtrace_pkg/
 ├── man/                       # Manual pages (generated)
 │
 ├── inst/                      # Package data and resources
-│   └── extdata/              # External data files
-│       ├── OV_GeneExp.Rdata  # Ovarian cancer gene expression data
-│       ├── OV_PI3K.Akt.mTOR.rda  # PI3K-Akt-mTOR pathway data
-│       ├── OV_WDtrace.mat    # Weighted D-trace matrix
-│       └── Platinum_Resistent_Genes.xlsx  # Platinum resistance genes
+│   └── extdata/              # (removed in current refactor)
 │
 ├── vignettes/                 # Package vignettes
 │   └── SPDtrace-introduction.Rmd  # Introduction and usage guide
@@ -80,9 +76,7 @@ SPDtrace_pkg/
 
 ### 5. Package Data (`inst/extdata/`)
 
-- **Ovarian Cancer Data**: Real gene expression data from TCGA
-- **Pathway Information**: PI3K-Akt-mTOR signaling pathway data
-- **Validation Data**: Known platinum resistance genes
+- Removed bundled datasets; users should supply their own data.
 
 ## Dependencies
 

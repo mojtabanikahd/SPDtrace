@@ -13,17 +13,11 @@ The **SPDtrace** package implements the SPD-trace method for efficient learning 
 - **SPD-trace Method**: Core implementation of the proposed SPD-trace algorithm
 - **Multiple Methods**: Support for SPD-trace, CrossFDTL, and D-trace methods
 - **Simulation Tools**: Built-in functions for performance evaluation and robustness testing
-- **Real Data Analysis**: Includes ovarian cancer data from TCGA for biological validation
+- **Real Data Analysis**: Applicable to real datasets for biological validation
 - **High Performance**: C++ implementation for efficient computation
 - **Comprehensive Documentation**: Detailed vignettes and examples
 
 ## Installation
-
-### From CRAN (Recommended)
-
-```r
-install.packages("SPDtrace")
-```
 
 ### From GitHub
 
@@ -94,8 +88,12 @@ summary(result)
 ### Basic Differential Network Inference
 
 ```r
-# Load data
-data("ov_gene_exp")
+# Construct two covariance matrices (example)
+set.seed(1)
+p <- 10
+cov_matrix_A <- diag(p)
+cov_matrix_B <- cov_matrix_A + 0.1 * (matrix(runif(p^2), p, p) > 0.9)
+cov_matrix_B <- (cov_matrix_B + t(cov_matrix_B)) / 2; diag(cov_matrix_B) <- 1
 
 # Run analysis
 result <- SPDtrace(cov_matrix_A, cov_matrix_B, sparsityLevel = 100)
@@ -121,21 +119,14 @@ print(results$performance_summary)
 ### Biological Validation
 
 ```r
-# Load functional gene sets
-data("platinum_resistant_genes")
-
-# Perform enrichment analysis
+# Perform enrichment analysis (using user-provided gene sets)
 enrichment <- fisher_test(all_genes, hub_genes, functional_genes)
 print(enrichment$p.value)
 ```
 
 ## Real-World Applications
 
-The package includes real data from The Cancer Genome Atlas (TCGA) for ovarian cancer analysis:
-
-- **Gene Expression Data**: 489 samples × 20,531 genes
-- **Pathway Information**: PI3K-Akt-mTOR signaling pathway
-- **Validation Data**: Known platinum resistance genes
+This package can be applied to public datasets (e.g., TCGA) for ovarian cancer analysis.
 
 ## Performance
 

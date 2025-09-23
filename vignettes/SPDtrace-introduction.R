@@ -152,15 +152,14 @@ print(metrics)
 
 \section{Data Import}
 
-The package supports various data formats:
+Provide your own datasets and convert them to covariance matrices before calling \texttt{SPDtrace()}. For example, you can compute sample covariance from an expression matrix:
 
 \begin{Schunk}
 \begin{Sinput}
-# Read MATLAB files
-data <- read.mat("data.mat")
-
-# Read Excel files
-data <- read_excel("data.xlsx")
+# Given two expression matrices X_A and X_B (samples x genes)
+cov_A <- cov(X_A)
+cov_B <- cov(X_B)
+result <- SPDtrace(CovA = cov_A, CovB = cov_B, sparsityLevel = 50)
 \end{Sinput}
 \end{Schunk}
 
