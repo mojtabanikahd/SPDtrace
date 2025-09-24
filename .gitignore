@@ -5,9 +5,7 @@
 *.Rcheck/
 *.Rproj.user/
 
-# Generated documentation
-man/
-NAMESPACE
+# Generated documentation (keep tracked for CRAN; do not ignore)
 
 # R cache
 .RData
@@ -41,3 +39,12 @@ coverage/
 # Package installation
 *.tar.gz
 *.zip
+
+# Compiled objects and binaries
+src/*.o
+src/*.so
+src/*.dll
+src/*.a
+src/*.lib
+src/*.exp
+src/*.ilk
