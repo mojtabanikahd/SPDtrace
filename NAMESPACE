@@ -37,8 +37,12 @@ importFrom(readxl, read_excel)
 # Import Matrix for sparse matrix operations
 importFrom(Matrix, Matrix, sparseMatrix)
 
-# Export all functions
-exportPattern("^[[:alpha:]]+")
+# Export intended user-level functions only
+export(SPDtrace)
+
+# Register S3 methods (not exported as user-level functions)
+S3method(print,SPDtrace_result)
+S3method(summary,SPDtrace_result)
 
 # UseDynLib directive for C++ code
 useDynLib(SPDtrace, .registration = TRUE)
