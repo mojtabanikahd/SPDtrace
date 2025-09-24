@@ -34,11 +34,11 @@ jobs:
       - name: Set up Pandoc
         uses: r-lib/actions/setup-pandoc@v2
 
-      - name: Query dependencies
-        run: |
-          install.packages('remotes')
-          remotes::install_deps(dependencies = TRUE)
-        shell: Rscript {0}
+      - name: Install R package dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
 
       - name: Install system deps (Linux only)
         if: runner.os == 'Linux'
