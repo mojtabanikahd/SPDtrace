@@ -126,17 +126,7 @@ result <- inference_Dtrace_solution_path(CovA, CovB, sparsityLevel = 50)
 
 \subsection{Simulation Study}
 
-The package includes functions for running simulation studies:
-
-\begin{Schunk}
-\begin{Sinput}
-# Run first scenario simulation
-results <- run_first_scenario(n_samples = 100, n_variables = 20)
-
-# Run second scenario simulation  
-results <- run_second_scenario(n_samples = 100, n_variables = 20)
-\end{Sinput}
-\end{Schunk}
+Simulation helpers have been removed in this refactor to reduce dependencies.
 
 \subsection{Performance Metrics}
 

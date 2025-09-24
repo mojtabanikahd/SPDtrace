@@ -89,31 +89,6 @@ test_that("Utility functions work correctly", {
   expect_true(all(eigen(A_psd)$values >= 0))  # Should be positive semi-definite
 })
 
-test_that("Simulation functions work correctly", {
-  # Test generate_synthetic_data
-  data_result <- generate_synthetic_data(n_samples = 100, n_variables = 10, sparsity = 5)
-  
-  expect_true(is.list(data_result))
-  expect_true(all(c("cov_A", "cov_B", "true_network") %in% names(data_result)))
-  expect_true(is.matrix(data_result$cov_A))
-  expect_true(is.matrix(data_result$cov_B))
-  expect_true(is.matrix(data_result$true_network))
-  
-  # Test calculate_performance_metrics
-  true_net <- matrix(0, 3, 3)
-  true_net[1, 2] <- true_net[2, 1] <- 1
-  
-  inferred_net <- matrix(0, 3, 3)
-  inferred_net[1, 2] <- inferred_net[2, 1] <- 1
-  inferred_net[1, 3] <- inferred_net[3, 1] <- 1
-  
-  metrics <- calculate_performance_metrics(inferred_net, true_net)
-  
-  expect_true(is.list(metrics))
-  expect_true(all(c("precision", "recall", "f1_score") %in% names(metrics)))
-  expect_equal(metrics$precision, 0.5)  # 1 true positive, 1 false positive
-  expect_equal(metrics$recall, 1.0)     # 1 true positive, 0 false negatives
-})
 
 test_that("Print and summary methods work", {
   result <- SPDtrace(CovA = Sigma_A, CovB = Sigma_B, sparsityLevel = 20, verbose = FALSE)

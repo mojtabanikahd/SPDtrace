@@ -66,8 +66,7 @@ summary(result)
 ### Main Functions
 
 - `SPDtrace()`: Main function for differential network inference
-- `run_first_scenario()`: First simulation scenario for performance comparison
-- `run_second_scenario()`: Second simulation scenario for robustness testing
+  
 
 ### Utility Functions
 

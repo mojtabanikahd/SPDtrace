@@ -24,7 +24,6 @@ SPDtrace_pkg/
 ├── R/                         # R source code
 │   ├── SPDtrace.R            # Main SPDtrace function and methods
 │   ├── utilities.R           # Utility functions
-│   ├── simulation.R          # Simulation functions
 │   └── data.R                # Data documentation
 │
 ├── src/                       # C++ source code
@@ -49,30 +48,26 @@ SPDtrace_pkg/
 
 ### 1. Main Functions (`R/SPDtrace.R`)
 
-- **`SPDtrace()`**: Main function for differential network inference
-- **`print.SPDtrace_result()`**: Print method for results
-- **`summary.SPDtrace_result()`**: Summary method for results
+- `SPDtrace()`: Main function for differential network inference
+- `print.SPDtrace_result()`: Print method for results
+- `summary.SPDtrace_result()`: Summary method for results
 
 ### 2. Utility Functions (`R/utilities.R`)
 
-- **`kendall_tau_matrix_to_pearson_correlation_matrix()`**: Convert correlation matrices
-- **`positive_semi_definite_maker()`**: Ensure matrix positive semi-definiteness
-- **`weighted_rank_based_pearson_correlation_estimator()`**: Estimate correlations
-- **`instability_evaluator_of_solution_paths()`**: Evaluate solution stability
-- **`fisher_test()`**: Perform Fisher's exact test for enrichment
+- `kendall_tau_matrix_to_pearson_correlation_matrix()`: Convert correlation matrices
+- `positive_semi_definite_maker()`: Ensure matrix positive semi-definiteness
+- `weighted_rank_based_pearson_correlation_estimator()`: Estimate correlations
+- `instability_evaluator_of_solution_paths()`: Evaluate solution stability
+- `fisher_test()`: Perform Fisher's exact test for enrichment
 
-### 3. Simulation Functions (`R/simulation.R`)
+### 3. [Removed] Simulation Functions
 
-- **`run_first_scenario()`**: Performance comparison simulation
-- **`run_second_scenario()`**: Robustness testing simulation
-- **`generate_synthetic_data()`**: Generate synthetic data for testing
-- **`generate_heterogeneous_data()`**: Generate heterogeneous datasets
-- **`calculate_performance_metrics()`**: Calculate precision, recall, F1-score
+Simulation helpers and scenarios have been removed to streamline dependencies.
 
 ### 4. C++ Implementation (`src/`)
 
-- **`SolutionPath.cpp`**: Core SPD-trace algorithm implementation
-- **`CrossFDTL.cpp`**: CrossFDTL algorithm implementation
+- `SolutionPath.cpp`: Core SPD-trace algorithm implementation
+- `CrossFDTL.cpp`: CrossFDTL algorithm implementation
 
 ### 5. Package Data (`inst/extdata/`)
 
@@ -81,25 +76,24 @@ SPDtrace_pkg/
 ## Dependencies
 
 ### Required Packages
-- **Rcpp** (>= 1.0.0): C++ integration
-- **RcppArmadillo** (>= 0.10.0): Linear algebra operations
-- **dplyr** (>= 1.0.0): Data manipulation
-- **ggplot2** (>= 3.3.0): Plotting
-- **igraph** (>= 1.2.0): Network analysis
+- `Rcpp` (>= 1.0.0): C++ integration
+- `RcppArmadillo` (>= 0.10.0): Linear algebra operations
+- `dplyr` (>= 1.0.0): Data manipulation
+- `ggplot2` (>= 3.3.0): Plotting
+- `igraph` (>= 1.2.0): Network analysis
 
 ### Suggested Packages
-- **testthat** (>= 3.0.0): Testing framework
-- **knitr** (>= 1.30): Vignette generation
-- **rmarkdown** (>= 2.5): Documentation
+- `testthat` (>= 3.0.0): Testing framework
+- `knitr` (>= 1.30): Vignette generation
+- `rmarkdown` (>= 2.5): Documentation
 
 ## Key Features
 
-1. **Efficient Implementation**: C++ backend for fast computation
-2. **Multiple Methods**: Support for SPD-trace, CrossFDTL, and D-trace
-3. **Simulation Tools**: Built-in functions for method evaluation
-4. **Real Data Analysis**: Includes ovarian cancer data for validation
-5. **Comprehensive Testing**: Unit tests for all functions
-6. **Professional Documentation**: Vignettes, examples, and help pages
+1. Efficient Implementation: C++ backend for fast computation
+2. Multiple Methods: Support for SPD-trace, CrossFDTL, and D-trace
+3. Real Data Analysis: Includes ovarian cancer data for validation
+4. Comprehensive Testing: Unit tests for all functions
+5. Professional Documentation: Vignettes, examples, and help pages
 
 ## Usage Examples
 
@@ -109,15 +103,6 @@ library(SPDtrace)
 result <- SPDtrace(CovA, CovB, sparsityLevel = 50)
 print(result)
 summary(result)
-```
-
-### Simulation Studies
-```r
-# Performance comparison
-results <- run_first_scenario(n_samples = 100, n_variables = 20)
-
-# Robustness testing
-robustness <- run_second_scenario(n_samples = 100, n_variables = 20)
 ```
 
 ### Utility Functions
@@ -154,9 +139,9 @@ test()
 
 ## Documentation
 
-- **Vignette**: `vignette("SPDtrace-introduction")`
-- **Function Help**: `?SPDtrace`
-- **Package Help**: `help(package = "SPDtrace")`
+- Vignette: `vignette("SPDtrace-introduction")`
+- Function Help: `?SPDtrace`
+- Package Help: `help(package = "SPDtrace")`
 
 ## Citation
 
@@ -174,10 +159,10 @@ If you use this package in your research, please cite:
 
 ## Support and Contributing
 
-- **Issues**: Report bugs on GitHub
-- **Contributions**: Pull requests welcome
-- **Contact**: nikahd@ce.sharif.ir
-- **Repository**: https://github.com/mojtabanikahd/SPDtrace
+- Issues: Report bugs on GitHub
+- Contributions: Pull requests welcome
+- Contact: nikahd@ce.sharif.ir
+- Repository: https://github.com/mojtabanikahd/SPDtrace
 
 ## License
 

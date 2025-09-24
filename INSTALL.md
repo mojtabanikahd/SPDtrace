@@ -40,7 +40,6 @@ install.packages(c("rmatio", "readxl"))
 # For Bioconductor packages (if needed)
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-BiocManager::install("GGMselect")
 ```
 
 ## Installation Methods

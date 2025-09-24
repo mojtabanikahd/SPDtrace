@@ -26,8 +26,7 @@ importFrom(ggpubr, ggarrange, stat_compare_means)
 importFrom(igraph, graph_from_adjacency_matrix, degree, betweenness, 
           closeness, page_rank, communities, cluster_louvain)
 
-# Import GGMselect for graphical model selection
-# Note: GGMselect function is not exported, using available functions instead
+
 
 # Import rmatio for reading MATLAB files
 importFrom(rmatio, read.mat)
