@@ -2,3 +2,6 @@
 ^\.vscode/.*
 ^README\.md$
 ^INSTALL\.md$
+^PACKAGE_STRUCTURE\.md$
+^build_package\.R$
+^test\.R$
