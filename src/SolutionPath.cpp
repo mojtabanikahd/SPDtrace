@@ -1,5 +1,4 @@
 #include <RcppArmadillo.h>
-#include <List>
 #include <cmath>
 
 using namespace Rcpp;
@@ -190,12 +189,12 @@ List inference_Dtrace_solution_path(NumericMatrix CovA, NumericMatrix CovB, int 
       std::list<int> hittingSigns;
       
       for(int i=0; i<nVar*nVar; i++){
-        bool isActivated = FALSE;
+        bool isActivated = false;
         for(it = preActiveSetIndices.begin(); it!=preActiveSetIndices.end(); ++it){
           if(i == *it)
-            isActivated = TRUE;
+            isActivated = true;
         }
-        if(isActivated == FALSE){
+        if(isActivated == false){
           double KIKADA=0, KIKASA=0;
           int j =0;
           for(itc = preActiveSetIndices.begin(); itc!=preActiveSetIndices.end(); ++itc){

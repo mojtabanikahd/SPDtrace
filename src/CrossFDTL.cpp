@@ -1,7 +1,6 @@
 # include <RcppArmadillo.h>
 
 
-#include <List>
 #include <cmath>
 
 #include <chrono>
@@ -34,7 +33,6 @@ List CrossFDTL(NumericMatrix CovA, NumericMatrix CovB,
   int nrow = CovA.nrow(), ncol = CovA.ncol(), nVar = CovA.ncol();
   
   // Define int iterator
-  std::list<int>::iterator it;
   
   List Rresults;
   NumericVector iterationTimes;
@@ -119,7 +117,7 @@ List CrossFDTL(NumericMatrix CovA, NumericMatrix CovB,
       double LQ_Delta;
       double LQ_Delta_tilde;
       
-      while(TRUE){
+      while(true){
         double alpha = pow(beta, k_Arimijo);
         Delta_tilde = Delta + alpha*D;
         
