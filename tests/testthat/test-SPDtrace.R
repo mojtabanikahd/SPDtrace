@@ -41,7 +41,7 @@ test_that("SPDtrace function works with valid inputs", {
 test_that("SPDtrace handles different methods", {
   # Test SPDtrace method
   result_spd <- SPDtrace(CovA = Sigma_A, CovB = Sigma_B, sparsityLevel = 20, 
-                         method = "SPDtrace", verbose = FALSE)
+                         verbose = FALSE)
   expect_equal(result_spd$method, "SPDtrace")
   
   # Test CrossFDTL method (if implemented)
@@ -68,7 +68,7 @@ test_that("SPDtrace validates input parameters", {
   expect_error(SPDtrace(CovA = Sigma_A, CovB = Sigma_B, sparsityLevel = p^2 + 1))
   
   # Test invalid method
-  expect_error(SPDtrace(CovA = Sigma_A, CovB = Sigma_B, sparsityLevel = 20, method = "Invalid"))
+  expect_error(SPDtrace(CovA = Sigma_A, CovB = Sigma_B, sparsityLevel = 20))
 })
 
 test_that("Utility functions work correctly", {

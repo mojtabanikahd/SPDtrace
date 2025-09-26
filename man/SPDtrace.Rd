@@ -20,6 +20,7 @@ A list containing:
   \item{solution_path}{List of solution path objects with knots and active sets}
   \item{differential_network}{Adjacency matrix of the inferred differential network}
   \item{lambda_sequence}{Sequence of regularization parameters}
+  \item{method}{Method used for inference}
   \item{call}{Function call}
 }
 \description{
