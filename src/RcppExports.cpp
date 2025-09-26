@@ -11,21 +11,6 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// CrossFDTL
-List CrossFDTL(NumericMatrix CovA, NumericMatrix CovB, double lambda, double rho, int maxiter);
-RcppExport SEXP _SPDtrace_CrossFDTL(SEXP CovASEXP, SEXP CovBSEXP, SEXP lambdaSEXP, SEXP rhoSEXP, SEXP maxiterSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< NumericMatrix >::type CovA(CovASEXP);
-    Rcpp::traits::input_parameter< NumericMatrix >::type CovB(CovBSEXP);
-    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
-    Rcpp::traits::input_parameter< double >::type rho(rhoSEXP);
-    Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
-    rcpp_result_gen = Rcpp::wrap(CrossFDTL(CovA, CovB, lambda, rho, maxiter));
-    return rcpp_result_gen;
-END_RCPP
-}
 // inference_Dtrace_solution_path
 List inference_Dtrace_solution_path(NumericMatrix CovA, NumericMatrix CovB, int sparsityLevel);
 RcppExport SEXP _SPDtrace_inference_Dtrace_solution_path(SEXP CovASEXP, SEXP CovBSEXP, SEXP sparsityLevelSEXP) {
@@ -41,7 +26,6 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_SPDtrace_CrossFDTL", (DL_FUNC) &_SPDtrace_CrossFDTL, 5},
     {"_SPDtrace_inference_Dtrace_solution_path", (DL_FUNC) &_SPDtrace_inference_Dtrace_solution_path, 3},
     {NULL, NULL, 0}
 };

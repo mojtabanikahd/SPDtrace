@@ -8,10 +8,6 @@
 #' @param CovA Covariance matrix for condition A (e.g., control group)
 #' @param CovB Covariance matrix for condition B (e.g., treatment group)
 #' @param sparsityLevel Maximum number of edges to include in the differential network
-#' @param method Method to use for differential network inference. Options:
-#'   - "SPDtrace": The proposed SPD-trace method (default)
-#'   - "CrossFDTL": CrossFDTL algorithm for comparison
-#'   - "DTrace": Modified D-trace method
 #' @param verbose Logical indicating whether to print progress information
 #' 
 #' @return A list containing:
@@ -50,7 +46,7 @@
 #' in Multi-Source Non-Paranormal Graphical Models. arXiv preprint arXiv:2410.02496.
 #' 
 #' @export
-SPDtrace <- function(CovA, CovB, sparsityLevel = NULL, method = "SPDtrace", verbose = TRUE) {
+SPDtrace <- function(CovA, CovB, sparsityLevel = NULL, verbose = TRUE) {
   
   # Input validation
   if (!is.matrix(CovA) || !is.matrix(CovB)) {
@@ -78,68 +74,47 @@ SPDtrace <- function(CovA, CovB, sparsityLevel = NULL, method = "SPDtrace", verb
     stop("sparsityLevel must be between 1 and the number of possible edges")
   }
   
-  if (!method %in% c("SPDtrace", "CrossFDTL", "DTrace")) {
-    stop("method must be one of: 'SPDtrace', 'CrossFDTL', 'DTrace'")
-  }
-  
   if (verbose) {
-    cat("Running", method, "method for differential network inference...\n")
     cat("Matrix dimensions:", nrow(CovA), "x", ncol(CovA), "\n")
     cat("Sparsity level:", sparsityLevel, "\n")
   }
   
   sparsityLevel = 2*sparsityLevel
-  # Call appropriate method
-  if (method == "SPDtrace") {
-    result <- inference_Dtrace_solution_path(CovA, CovB, sparsityLevel)
-  } else if (method == "CrossFDTL") {
-    result <- cross_fdtl_inference(CovA, CovB, sparsityLevel)
-  } else if (method == "DTrace") {
-    result <- dtrace_inference(CovA, CovB, sparsityLevel)
-  }
+  result <- inference_Dtrace_solution_path(CovA, CovB, sparsityLevel)
   
   # Process results
-  if (method == "SPDtrace") {
-    # Extract solution path information
-    solution_path <- list()
-    lambda_sequence <- numeric(0)
-    
-    if (length(result) > 0) {
-      for (i in seq_along(result)) {
-        if (is.list(result[[i]]) && "knots_lambdas" %in% names(result[[i]])) {
-          solution_path[[i]] <- result[[i]]
-          lambda_sequence[i] <- result[[i]]$knots_lambdas
-        }
+  solution_path <- list()
+  lambda_sequence <- numeric(0)
+  
+  if (length(result) > 0) {
+    for (i in seq_along(result)) {
+      if (is.list(result[[i]]) && "knots_lambdas" %in% names(result[[i]])) {
+        solution_path[[i]] <- result[[i]]
+        lambda_sequence[i] <- result[[i]]$knots_lambdas
       }
     }
-    
-    # Create differential network adjacency matrix
-    p <- nrow(CovA)
-    differential_network <- matrix(0, p, p)
-    
-    if (length(solution_path) > 0) {
-      # Use the last solution in the path
-      last_solution <- solution_path[[length(solution_path)]]
-      if ("active_set" %in% names(last_solution)) {
-        active_edges <- last_solution$active_set + 1  # Convert to 1-based indexing
-        for (edge_idx in active_edges) {
-          if (edge_idx <= p^2) {
-            row_idx <- ((edge_idx - 1) %% p) + 1
-            col_idx <- ((edge_idx - 1) %/% p) + 1
-            if (row_idx != col_idx) {
-              differential_network[row_idx, col_idx] <- 1
-              differential_network[col_idx, row_idx] <- 1
-            }
+  }
+  
+  # Create differential network adjacency matrix
+  p <- nrow(CovA)
+  differential_network <- matrix(0, p, p)
+  
+  if (length(solution_path) > 0) {
+    # Use the last solution in the path
+    last_solution <- solution_path[[length(solution_path)]]
+    if ("active_set" %in% names(last_solution)) {
+      active_edges <- last_solution$active_set + 1  # Convert to 1-based indexing
+      for (edge_idx in active_edges) {
+        if (edge_idx <= p^2) {
+          row_idx <- ((edge_idx - 1) %% p) + 1
+          col_idx <- ((edge_idx - 1) %/% p) + 1
+          if (row_idx != col_idx) {
+            differential_network[row_idx, col_idx] <- 1
+            differential_network[col_idx, row_idx] <- 1
           }
         }
       }
     }
-    
-  } else {
-    # For other methods, assume result is already in the right format
-    solution_path <- result
-    lambda_sequence <- if ("lambda" %in% names(result)) result$lambda else numeric(0)
-    differential_network <- if ("network" %in% names(result)) result$network else result
   }
   
   # Create output object
@@ -147,7 +122,6 @@ SPDtrace <- function(CovA, CovB, sparsityLevel = NULL, method = "SPDtrace", verb
     solution_path = solution_path,
     differential_network = differential_network,
     lambda_sequence = lambda_sequence,
-    method = method,
     call = match.call()
   )
   
@@ -158,70 +132,6 @@ SPDtrace <- function(CovA, CovB, sparsityLevel = NULL, method = "SPDtrace", verb
   }
   
   return(output)
-}
-
-# Wrapper functions for different methods
-cross_fdtl_inference <- function(CovA, CovB, sparsityLevel) {
-  # For CrossFDTL, we need to set appropriate lambda and rho values
-  # This is a simplified wrapper - in practice you might want to tune these parameters
-  lambda <- 0.1  # Default lambda value
-  rho <- 0.5     # Default rho value
-  maxiter <- 100 # Default max iterations
-  
-  result <- CrossFDTL(CovA, CovB, lambda, rho, maxiter)
-  
-  # Convert the result to a network format
-  p <- nrow(CovA)
-  network <- matrix(0, p, p)
-  
-  if ("delta" %in% names(result)) {
-    delta_matrix <- result$delta
-    # Convert sparse matrix to adjacency matrix
-    if (inherits(delta_matrix, "sparseMatrix")) {
-      delta_matrix <- as.matrix(delta_matrix)
-    }
-    # Create binary network based on non-zero elements
-    network <- (abs(delta_matrix) > 1e-10) * 1
-    diag(network) <- 0  # Remove diagonal
-  }
-  
-  return(list(
-    network = network,
-    lambda = lambda,
-    method = "CrossFDTL"
-  ))
-}
-
-dtrace_inference <- function(CovA, CovB, sparsityLevel) {
-  # This is already implemented as inference_Dtrace_solution_path
-  result <- inference_Dtrace_solution_path(CovA, CovB, sparsityLevel)
-  
-  # Convert to network format
-  p <- nrow(CovA)
-  network <- matrix(0, p, p)
-  
-  if (length(result) > 0) {
-    # Use the last solution in the path
-    last_solution <- result[[length(result)]]
-    if ("active_set" %in% names(last_solution)) {
-      active_edges <- last_solution$active_set + 1  # Convert to 1-based indexing
-      for (edge_idx in active_edges) {
-        if (edge_idx <= p^2) {
-          row_idx <- ((edge_idx - 1) %% p) + 1
-          col_idx <- ((edge_idx - 1) %/% p) + 1
-          if (row_idx != col_idx) {
-            network[row_idx, col_idx] <- 1
-            network[col_idx, row_idx] <- 1
-          }
-        }
-      }
-    }
-  }
-  
-  return(list(
-    network = network,
-    method = "DTrace"
-  ))
 }
 
 #' Print method for SPDtrace results

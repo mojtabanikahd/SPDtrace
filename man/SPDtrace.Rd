@@ -13,11 +13,6 @@ SPDtrace(CovA, CovB, sparsityLevel = NULL, method = "SPDtrace", verbose = TRUE)
 
 \item{sparsityLevel}{Maximum number of edges to include in the differential network}
 
-\item{method}{Method to use for differential network inference. Options:
-- "SPDtrace": The proposed SPD-trace method (default)
-- "CrossFDTL": CrossFDTL algorithm for comparison
-- "DTrace": Modified D-trace method}
-
 \item{verbose}{Logical indicating whether to print progress information}
 }
 \value{
@@ -25,7 +20,6 @@ A list containing:
   \item{solution_path}{List of solution path objects with knots and active sets}
   \item{differential_network}{Adjacency matrix of the inferred differential network}
   \item{lambda_sequence}{Sequence of regularization parameters}
-  \item{method}{Method used for inference}
   \item{call}{Function call}
 }
 \description{
