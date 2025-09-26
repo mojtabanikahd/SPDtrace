@@ -154,7 +154,6 @@ SPDtrace <- function(CovA, CovB, sparsityLevel = NULL, method = "SPDtrace", verb
   
   if (verbose) {
     cat("Inference completed successfully!\n")
-    cat("Number of edges in differential network:", sum(differential_network) / 2, "\n")
   }
   
   return(output)
