@@ -146,8 +146,8 @@ print.SPDtrace_result <- function(x, ...) {
   cat("SPDtrace Result\n")
   cat("==============\n")
   cat("Method:", x$method, "\n")
-  cat("Matrix dimensions:", nrow(x$differential_network), "x", ncol(x$differential_network), "\n")
-  cat("Number of edges:", sum(x$differential_network) / 2, "\n")
+  cat("Matrix dimensions:", nrow(x$last_differential_network), "x", ncol(x$last_differential_network), "\n")
+  cat("Number of edges:", sum(x$last_differential_network) / 2, "\n")
   cat("Lambda sequence length:", length(x$lambda_sequence), "\n")
   cat("\n")
   
@@ -168,10 +168,10 @@ summary.SPDtrace_result <- function(object, ...) {
   cat("SPDtrace Result Summary\n")
   cat("======================\n")
   cat("Method:", object$method, "\n")
-  cat("Matrix dimensions:", nrow(object$differential_network), "x", ncol(object$differential_network), "\n")
-  cat("Total possible edges:", choose(nrow(object$differential_network), 2), "\n")
-  cat("Active edges:", sum(object$differential_network) / 2, "\n")
-  cat("Edge density:", round(sum(object$differential_network) / (nrow(object$differential_network)^2 - nrow(object$differential_network)), 4), "\n")
+  cat("Matrix dimensions:", nrow(object$last_differential_network), "x", ncol(object$last_differential_network), "\n")
+  cat("Total possible edges:", choose(nrow(object$last_differential_network), 2), "\n")
+  cat("Active edges:", sum(object$last_differential_network) / 2, "\n")
+  cat("Edge density:", round(sum(object$last_differential_network) / (nrow(object$last_differential_network)^2 - nrow(object$last_differential_network)), 4), "\n")
   
   if (length(object$lambda_sequence) > 0) {
     cat("\nLambda Statistics:\n")
