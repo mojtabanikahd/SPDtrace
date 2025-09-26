@@ -4,7 +4,7 @@
 \alias{SPDtrace}
 \title{SPD-trace: Efficient Learning of Differential Networks}
 \usage{
-SPDtrace(CovA, CovB, sparsityLevel = NULL, method = "SPDtrace", verbose = TRUE)
+SPDtrace(CovA, CovB, sparsityLevel = NULL, verbose = TRUE)
 }
 \arguments{
 \item{CovA}{Covariance matrix for condition A (e.g., control group)}
