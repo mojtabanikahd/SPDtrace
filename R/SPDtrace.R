@@ -85,12 +85,13 @@ SPDtrace <- function(CovA, CovB, sparsityLevel = NULL, verbose = TRUE) {
   # Process results
   solution_path <- list()
   lambda_sequence <- numeric(0)
-  
-  if (length(result) > 0) {
-    for (i in seq_along(result)) {
-      if (is.list(result[[i]]) && "knots_lambdas" %in% names(result[[i]])) {
-        solution_path[[i]] <- result[[i]]
-        lambda_sequence[i] <- result[[i]]$knots_lambdas
+  sp = result$solution_path
+
+  if (length(sp) > 0) {
+    for (i in seq_along(sp)) {
+      if (is.list(sp[[i]]) && "knots_lambdas" %in% names(sp[[i]])) {
+        solution_path[[i]] <- sp[[i]]
+        lambda_sequence[i] <- sp[[i]]$knots_lambdas
       }
     }
   }
@@ -103,11 +104,12 @@ SPDtrace <- function(CovA, CovB, sparsityLevel = NULL, verbose = TRUE) {
     # Use the last solution in the path
     last_solution <- solution_path[[length(solution_path)]]
     if ("active_set" %in% names(last_solution)) {
-      active_edges <- last_solution$active_set + 1  # Convert to 1-based indexing
-      for (edge_idx in active_edges) {
+      active_edges <- last_solution$active_set  # Convert to 1-based indexing
+      for (idx in seq(active_edges)) {
+        edge_idx <- active_edges[idx]
         if (edge_idx <= p^2) {
-          row_idx <- ((edge_idx - 1) %% p) + 1
-          col_idx <- ((edge_idx - 1) %/% p) + 1
+          row_idx <- as.integer((edge_idx) %% p) + 1
+          col_idx <- as.integer((edge_idx) / p) + 1
           if (row_idx != col_idx) {
             differential_network[row_idx, col_idx] <- 1
             differential_network[col_idx, row_idx] <- 1
@@ -120,7 +122,7 @@ SPDtrace <- function(CovA, CovB, sparsityLevel = NULL, verbose = TRUE) {
   # Create output object
   output <- list(
     solution_path = solution_path,
-    differential_network = differential_network,
+    last_differential_network = differential_network,
     lambda_sequence = lambda_sequence,
     call = match.call()
   )
