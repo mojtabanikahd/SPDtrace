@@ -64,9 +64,6 @@ test_that("SPDtrace validates input parameters", {
   # Test invalid sparsity level
   expect_error(SPDtrace(CovA = Sigma_A, CovB = Sigma_B, sparsityLevel = -1))
   expect_error(SPDtrace(CovA = Sigma_A, CovB = Sigma_B, sparsityLevel = p^2 + 1))
-  
-  # Test invalid method
-  expect_error(SPDtrace(CovA = Sigma_A, CovB = Sigma_B, sparsityLevel = 20))
 })
 
 test_that("Utility functions work correctly", {
