@@ -71,7 +71,7 @@ SPDtrace <- function(CovA, CovB, sparsityLevel = NULL, method = "SPDtrace", verb
   }
   
   if (is.null(sparsityLevel)) {
-    sparsityLevel <- choose(nrow(CovA), 2) %/% 4  # Default to 25% of possible edges
+    sparsityLevel <- choose(nrow(CovA), 2) %/% 10  # Default to 10% of possible edges
   }
   
   if (sparsityLevel <= 0 || sparsityLevel > choose(nrow(CovA), 2)) {
@@ -88,6 +88,7 @@ SPDtrace <- function(CovA, CovB, sparsityLevel = NULL, method = "SPDtrace", verb
     cat("Sparsity level:", sparsityLevel, "\n")
   }
   
+  sparsityLevel = 2*sparsityLevel
   # Call appropriate method
   if (method == "SPDtrace") {
     result <- inference_Dtrace_solution_path(CovA, CovB, sparsityLevel)
