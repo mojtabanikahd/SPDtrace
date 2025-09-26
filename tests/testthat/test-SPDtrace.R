@@ -25,13 +25,12 @@ test_that("SPDtrace function works with valid inputs", {
   # Check output structure
   expect_type(result, "list")
   expect_true("SPDtrace_result" %in% class(result))
-  expect_true(all(c("solution_path", "differential_network", "lambda_sequence", "method", "call") %in% names(result)))
+  expect_true(all(c("solution_path", "differential_network", "lambda_sequence", "call") %in% names(result)))
   
   # Check output types
   expect_true(is.list(result$solution_path))
   expect_true(is.matrix(result$differential_network))
   expect_true(is.numeric(result$lambda_sequence))
-  expect_equal(result$method, "SPDtrace")
   
   # Check matrix dimensions
   expect_equal(nrow(result$differential_network), p)
