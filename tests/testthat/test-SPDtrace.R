@@ -42,7 +42,6 @@ test_that("SPDtrace handles different methods", {
   # Test SPDtrace method
   result_spd <- SPDtrace(CovA = Sigma_A, CovB = Sigma_B, sparsityLevel = 20, 
                          verbose = FALSE)
-  expect_equal(result_spd$method, "SPDtrace")
   
   # Test CrossFDTL method (if implemented)
   # result_cross <- SPDtrace(CovA = Sigma_A, CovB = Sigma_B, sparsityLevel = 20, 

@@ -50,7 +50,7 @@ List inference_Dtrace_solution_path(NumericMatrix CovA, NumericMatrix CovB, int 
   std::list<int> preActiveSetIndices;
   std::list<int> preActiveSetSigns;
   
-  while(activeSetSize <= sparsityLevel) {
+  while(activeSetSize < sparsityLevel) {
     if(preLambda == 0)
       break;
     if(activeSetSize == 0) {
