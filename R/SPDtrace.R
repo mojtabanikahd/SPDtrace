@@ -12,8 +12,8 @@ convert_indices_to_edge <- function(upper_tri_indices, p, node_labels) {
   for (idx in upper_tri_indices) {
     # Convert upper triangular index to matrix coordinates
     # For upper triangular matrix, index i corresponds to row/col in upper triangle
-    row <- ((idx - 1) %/% (p - 1)) + 1
-    col <- ((idx - 1) %% (p - 1)) + row + 1
+    row <- ((idx-1) %/% p) + 1
+    col <- ((idx-1) %% p) + 1
     
     # Ensure we're within bounds
     if (row < col && col <= p) {
@@ -174,7 +174,7 @@ print.SPDtrace_result <- function(x, ...) {
   cat("Number of edges:", sum(x$last_differential_network[upper.tri(x$last_differential_network)]), "\n")
   cat("Lambda sequence length:", length(x$lambda_sequence), "\n")
   # Extract active edges from differential network matrix
-  upper_tri_indices <- which(x$last_differential_network[upper.tri(x$last_differential_network)] == 1)
+  upper_tri_indices <- which(x$last_differential_network == 1)
   convert_indices_to_edge(upper_tri_indices, ncol(x$last_differential_network), colnames(x$last_differential_network))
   cat("\n")
   
