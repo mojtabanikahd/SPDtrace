@@ -1,5 +1,29 @@
 #' SPD-trace: Efficient Learning of Differential Networks
 #' 
+# Private helper function to print edges from upper triangular matrix indices
+convert_indices_to_edge <- function(upper_tri_indices, p, node_labels) {
+  if (length(upper_tri_indices) == 0) {
+    cat("No active edges found.\n")
+    return(invisible(NULL))
+  }
+  
+  cat("Active edges:\n")
+  
+  # Convert upper triangular indices to row/column pairs and print
+  for (idx in upper_tri_indices) {
+    # Convert upper triangular index to matrix coordinates
+    # For upper triangular matrix, index i corresponds to row/col in upper triangle
+    row <- ((idx - 1) %/% (p - 1)) + 1
+    col <- ((idx - 1) %% (p - 1)) + row + 1
+    
+    # Ensure we're within bounds
+    if (row < col && col <= p) {
+      node1 <- if (!is.null(node_labels)) node_labels[row] else paste0("Node", row)
+      node2 <- if (!is.null(node_labels)) node_labels[col] else paste0("Node", col)
+      cat("  ", node1, "---", node2, "\n")
+    }
+  }
+}
 #' @description
 #' Implements the SPD-trace method for efficient learning of differential networks 
 #' in multi-source non-paranormal graphical models. This function provides the main 
@@ -118,7 +142,8 @@ SPDtrace <- function(CovA, CovB, sparsityLevel = NULL, verbose = TRUE) {
       }
     }
   }
-  
+  rownames(differential_network) <- rownames(CovA)
+  colnames(differential_network) <- colnames(CovA)
   # Create output object
   output <- list(
     solution_path = solution_path,
@@ -147,13 +172,12 @@ print.SPDtrace_result <- function(x, ...) {
   cat("==============\n")
   cat("Method:", x$method, "\n")
   cat("Matrix dimensions:", nrow(x$last_differential_network), "x", ncol(x$last_differential_network), "\n")
-  cat("Number of edges:", sum(x$last_differential_network) / 2, "\n")
+  cat("Number of edges:", sum(x$last_differential_network[upper.tri(x$last_differential_network)]), "\n")
   cat("Lambda sequence length:", length(x$lambda_sequence), "\n")
+  # Extract active edges from differential network matrix
+  upper_tri_indices <- which(x$last_differential_network[upper.tri(x$last_differential_network)] == 1)
+  convert_indices_to_edge(upper_tri_indices, ncol(x$last_differential_network), colnames(x$last_differential_network))
   cat("\n")
-  
-  if (length(x$lambda_sequence) > 0) {
-    cat("Lambda range:", range(x$lambda_sequence), "\n")
-  }
   
   invisible(x)
 }
@@ -170,16 +194,12 @@ summary.SPDtrace_result <- function(object, ...) {
   cat("Method:", object$method, "\n")
   cat("Matrix dimensions:", nrow(object$last_differential_network), "x", ncol(object$last_differential_network), "\n")
   cat("Total possible edges:", choose(nrow(object$last_differential_network), 2), "\n")
-  cat("Active edges:", sum(object$last_differential_network) / 2, "\n")
-  cat("Edge density:", round(sum(object$last_differential_network) / (nrow(object$last_differential_network)^2 - nrow(object$last_differential_network)), 4), "\n")
-  
-  if (length(object$lambda_sequence) > 0) {
-    cat("\nLambda Statistics:\n")
-    cat("  Min:", min(object$lambda_sequence), "\n")
-    cat("  Max:", max(object$lambda_sequence), "\n")
-    cat("  Mean:", mean(object$lambda_sequence), "\n")
-    cat("  Median:", median(object$lambda_sequence), "\n")
-  }
-  
+  cat("Active edges:", sum(object$last_differential_network[upper.tri(object$last_differential_network)]), "\n")
+  cat("Lambda sequence length:", length(object$lambda_sequence), "\n")
+  # Extract active edges from differential network matrix
+  upper_tri_indices <- which(object$last_differential_network[upper.tri(object$last_differential_network)] == 1)
+  convert_indices_to_edge(upper_tri_indices, ncol(object$last_differential_network), colnames(object$last_differential_network))
+  cat("\n")
+
   invisible(object)
 }

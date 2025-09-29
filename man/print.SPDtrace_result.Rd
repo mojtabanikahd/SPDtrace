@@ -4,7 +4,7 @@
 \alias{print.SPDtrace_result}
 \title{Print method for SPDtrace results}
 \usage{
-print.SPDtrace_result(x, ...)
+\method{print}{SPDtrace_result}(x, ...)
 }
 \arguments{
 \item{x}{Object of class SPDtrace_result}

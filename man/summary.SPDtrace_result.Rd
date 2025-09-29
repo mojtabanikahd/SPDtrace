@@ -4,7 +4,7 @@
 \alias{summary.SPDtrace_result}
 \title{Summary method for SPDtrace results}
 \usage{
-summary.SPDtrace_result(object, ...)
+\method{summary}{SPDtrace_result}(object, ...)
 }
 \arguments{
 \item{object}{Object of class SPDtrace_result}

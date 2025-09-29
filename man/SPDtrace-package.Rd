@@ -2,6 +2,7 @@
 % Please edit documentation in R/SPDtrace-package.R
 \docType{package}
 \name{SPDtrace-package}
+\alias{SPDtrace}
 \alias{SPDtrace-package}
 \title{SPDtrace Package}
 \description{
