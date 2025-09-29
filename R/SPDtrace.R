@@ -23,50 +23,62 @@ convert_indices_to_edge <- function(upper_tri_indices, p, node_labels) {
     }
   }
 }
+#' Sparse Differential Network Estimation via SPDtrace
+#' 
 #' @description
-#' Implements the SPD-trace method for efficient learning of differential networks 
-#' in multi-source non-paranormal graphical models. This function provides the main 
-#' interface for differential network inference.
+#' SPDtrace is an efficient method for learning sparse structural changes (differential
+#' network) between two classes of non-paranormal graphical models by solving the
+#' lasso-penalized D-trace loss function. It computes the exact solution path across
+#' regularization parameters by exploiting the piecewise linearity of the path,
+#' substantially reducing computational complexity in high-dimensional settings.
 #' 
-#' @param CovA Covariance matrix for condition A (e.g., control group)
-#' @param CovB Covariance matrix for condition B (e.g., treatment group)
-#' @param sparsityLevel Maximum number of edges to include in the differential network
-#' @param verbose Logical indicating whether to print progress information
+#' @param CovA Estimated covariance matrix for class A.
+#' @param CovB Estimated covariance matrix for class B.
+#' @param sparsityLevel Integer, maximum number of edges to be identified in the
+#'   differential network. Controls algorithm termination. Larger values increase runtime.
+#' @param verbose Logical, whether to print progress logs.
 #' 
-#' @return A list containing:
-#'   \item{solution_path}{List of solution path objects with knots and active sets}
-#'   \item{differential_network}{Adjacency matrix of the inferred differential network}
-#'   \item{lambda_sequence}{Sequence of regularization parameters}
-#'   \item{method}{Method used for inference}
-#'   \item{call}{Function call}
+#' @return A list with the following components:
+#'   \item{solution_path}{Object containing iteration logs, number of steps, intermediate
+#'     results, and corresponding \eqn{\lambda} values.}
+#'   \item{last_differential_network}{Final binary adjacency matrix (1 = differential
+#'     edge present, 0 = absent).}
+#'   \item{lambda_sequence}{Vector of \eqn{\lambda} values (knots) where new edges are
+#'     identified.}
+#'   \item{call}{Function call, showing how the method was invoked.}
 #' 
 #' @examples
 #' \dontrun{
-#' # Generate example data
-#' set.seed(123)
-#' n <- 100
-#' p <- 20
+#' set.seed(1)
+#' p <- 6
 #' 
-#' # Create two covariance matrices
-#' Sigma_A <- diag(p) + 0.3 * (matrix(runif(p^2), p, p) > 0.8)
-#' Sigma_A <- (Sigma_A + t(Sigma_A)) / 2
-#' diag(Sigma_A) <- 1
+#' # Construct two sparse precision matrices (Theta_A, Theta_B)
+#' Theta_A <- diag(p)
+#' Theta_A[1,2] <- Theta_A[2,1] <- -0.3
+#' Theta_A[3,4] <- Theta_A[4,3] <- -0.4
+#' Theta_A[5,6] <- Theta_A[6,5] <- -0.35
 #' 
-#' Sigma_B <- Sigma_A + 0.2 * (matrix(runif(p^2), p, p) > 0.9)
-#' Sigma_B <- (Sigma_B + t(Sigma_B)) / 2
-#' diag(Sigma_B) <- 1
+#' Theta_B <- diag(p)
+#' Theta_B[1,3] <- Theta_B[3,1] <- -0.25
+#' Theta_B[2,4] <- Theta_B[4,2] <- -0.3
+#' Theta_B[5,6] <- Theta_B[6,5] <- -0.15  # a changed strength vs class A
 #' 
-#' # Run SPD-trace
-#' result <- SPDtrace(CovA = Sigma_A, CovB = Sigma_B, sparsityLevel = 50)
+#' # Convert to covariance matrices
+#' Sigma_A <- solve(Theta_A)
+#' Sigma_B <- solve(Theta_B)
 #' 
-#' # View results
-#' print(result$differential_network)
-#' plot(result$lambda_sequence, type = "l")
+#' # Run SPDtrace with a cap on number of edges
+#' fit <- SPDtrace(CovA = Sigma_A, CovB = Sigma_B, sparsityLevel = 10, verbose = TRUE)
+#' 
+#' # Inspect results
+#' str(fit$solution_path)
+#' fit$last_differential_network
+#' plot(fit$lambda_sequence, type = "s", xlab = "Step", ylab = expression(lambda))
 #' }
 #' 
 #' @references
-#' Nikahd, M., & Motahari, S. A. (2025). Efficient Learning of Differential Networks 
-#' in Multi-Source Non-Paranormal Graphical Models. arXiv preprint arXiv:2410.02496.
+#' Nikahd, M., & Motahari, S. A. (2024). Efficient Learning of Differential Networks
+#' in Non-Paranormal Graphical Models. Please cite this manuscript when using SPDtrace.
 #' 
 #' @export
 SPDtrace <- function(CovA, CovB, sparsityLevel = NULL, verbose = TRUE) {
