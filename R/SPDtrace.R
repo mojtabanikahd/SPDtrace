@@ -24,62 +24,55 @@ convert_indices_to_edge <- function(upper_tri_indices, p, node_labels) {
   }
 }
 #' Sparse Differential Network Estimation via SPDtrace
-#' 
+#'
 #' @description
 #' SPDtrace is an efficient method for learning sparse structural changes (differential
-#' network) between two classes of non-paranormal graphical models by solving the
+#' network) between two classes of non-paranormal graphical models, by solving the
 #' lasso-penalized D-trace loss function. It computes the exact solution path across
-#' regularization parameters by exploiting the piecewise linearity of the path,
+#' regularization parameters by exploiting the piecewise linearity of the solution path,
 #' substantially reducing computational complexity in high-dimensional settings.
-#' 
+#'
 #' @param CovA Estimated covariance matrix for class A.
 #' @param CovB Estimated covariance matrix for class B.
 #' @param sparsityLevel Integer, maximum number of edges to be identified in the
 #'   differential network. Controls algorithm termination. Larger values increase runtime.
 #' @param verbose Logical, whether to print progress logs.
-#' 
+#'
 #' @return A list with the following components:
 #'   \item{solution_path}{Object containing iteration logs, number of steps, intermediate
-#'     results, and corresponding \eqn{\lambda} values.}
-#'   \item{last_differential_network}{Final binary adjacency matrix (1 = differential
-#'     edge present, 0 = absent).}
-#'   \item{lambda_sequence}{Vector of \eqn{\lambda} values (knots) where new edges are
-#'     identified.}
+#'   results, and corresponding \eqn{\lambda} values.}
+#'   \item{last_differential_network}{Final binary adjacency matrix (1 = differential edge present,
+#'   0 = absent).}
+#'   \item{lambda_sequence}{Vector of \eqn{\lambda} values (knots) where new edges are identified.}
 #'   \item{call}{Function call, showing how the method was invoked.}
-#' 
+#'
 #' @examples
 #' \dontrun{
-#' set.seed(1)
-#' p <- 6
-#' 
-#' # Construct two sparse precision matrices (Theta_A, Theta_B)
-#' Theta_A <- diag(p)
-#' Theta_A[1,2] <- Theta_A[2,1] <- -0.3
-#' Theta_A[3,4] <- Theta_A[4,3] <- -0.4
-#' Theta_A[5,6] <- Theta_A[6,5] <- -0.35
-#' 
-#' Theta_B <- diag(p)
-#' Theta_B[1,3] <- Theta_B[3,1] <- -0.25
-#' Theta_B[2,4] <- Theta_B[4,2] <- -0.3
-#' Theta_B[5,6] <- Theta_B[6,5] <- -0.15  # a changed strength vs class A
-#' 
-#' # Convert to covariance matrices
-#' Sigma_A <- solve(Theta_A)
-#' Sigma_B <- solve(Theta_B)
-#' 
-#' # Run SPDtrace with a cap on number of edges
-#' fit <- SPDtrace(CovA = Sigma_A, CovB = Sigma_B, sparsityLevel = 10, verbose = TRUE)
-#' 
+#' # Example with covariance matrices for two classes
+#' set.seed(123)
+#' p <- 20
+#'
+#' # Construct covariance for class A
+#' Sigma_A <- diag(p) + 0.3 * (matrix(runif(p^2), p, p) > 0.8)
+#' Sigma_A <- (Sigma_A + t(Sigma_A)) / 2; diag(Sigma_A) <- 1
+#'
+#' # Construct covariance for class B
+#' Sigma_B <- Sigma_A + 0.2 * (matrix(runif(p^2), p, p) > 0.9)
+#' Sigma_B <- (Sigma_B + t(Sigma_B)) / 2; diag(Sigma_B) <- 1
+#'
+#' # Run SPDtrace
+#' result <- SPDtrace(CovA = Sigma_A, CovB = Sigma_B, sparsityLevel = 50, verbose = TRUE)
+#'
 #' # Inspect results
-#' str(fit$solution_path)
-#' fit$last_differential_network
-#' plot(fit$lambda_sequence, type = "s", xlab = "Step", ylab = expression(lambda))
+#' print(result$last_differential_network)
+#' plot(result$lambda_sequence, type = "l", xlab = "Step", ylab = expression(lambda))
 #' }
-#' 
+#'
 #' @references
 #' Nikahd, M., & Motahari, S. A. (2024). Efficient Learning of Differential Networks
-#' in Non-Paranormal Graphical Models. Please cite this manuscript when using SPDtrace.
-#' 
+#' in Multi-Source Non-Paranormal Graphical Models. Please cite this manuscript when
+#' using the SPDtrace method.
+#'
 #' @export
 SPDtrace <- function(CovA, CovB, sparsityLevel = NULL, verbose = TRUE) {
   
