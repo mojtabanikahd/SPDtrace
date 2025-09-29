@@ -14,7 +14,7 @@
 #' pearson_matrix <- kendall_tau_matrix_to_pearson_correlation_matrix(tau_matrix)
 #' print(pearson_matrix)
 #' 
-#' @export
+#' @noRd
 kendall_tau_matrix_to_pearson_correlation_matrix <- function(kendall_tau_matrix) {
   if (!is.matrix(kendall_tau_matrix)) {
     stop("Input must be a matrix")
@@ -38,7 +38,7 @@ kendall_tau_matrix_to_pearson_correlation_matrix <- function(kendall_tau_matrix)
 #' A_psd <- positive_semi_definite_maker(A)
 #' eigen(A_psd)$values  # Should all be >= 0
 #' 
-#' @export
+#' @noRd
 positive_semi_definite_maker <- function(A) {
   if (!is.matrix(A)) {
     stop("Input must be a matrix")

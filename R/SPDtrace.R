@@ -1,5 +1,4 @@
-#' SPD-trace: Efficient Learning of Differential Networks
-#' 
+#' @noRd
 # Private helper function to print edges from upper triangular matrix indices
 convert_indices_to_edge <- function(upper_tri_indices, p, node_labels) {
   if (length(upper_tri_indices) == 0) {
