@@ -66,6 +66,24 @@ convert_indices_to_edge <- function(upper_tri_indices, p, node_labels) {
 #' # Inspect results
 #' print(result$last_differential_network)
 #' plot(result$lambda_sequence, type = "l", xlab = "Step", ylab = expression(lambda))
+#'
+#' # Alternative example using precision matrices for two classes
+#' d <- 10
+#' m <- 9
+#'
+#' # build the precision matrix of class A
+#' Precision_A <- outer(1:d, 1:d, function(i, j) 0.5^(abs(i - j)))
+#'
+#' # build the precision matrix of class B
+#' Precision_B <- Precision_A
+#' Precision_A[abs(row(Precision_A) - col(Precision_B)) == m] <- 0.5
+#'
+#' # Compute the covariance matrix of both classes
+#' CovA <- solve(Precision_A)
+#' CovB <- solve(Precision_B)
+#'
+#' # Compute the differential network
+#' SPDtrace(CovA = CovA, CovB = CovB, sparsityLevel = 1)
 #' }
 #'
 #' @references
