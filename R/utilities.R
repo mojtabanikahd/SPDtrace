@@ -68,11 +68,14 @@ positive_semi_definite_maker <- function(A) {
 #' Weighted Rank-Based Pearson Correlation Estimator
 #' 
 #' @description
-#' This function estimates a Pearson correlation matrix from multiple datasets using a
-#' rank-based approach. For each dataset (n × p matrix), it computes the Kendall's tau
-#' correlation matrix, integrates them across datasets, and transforms the integrated
-#' Kendall's tau into a Pearson correlation estimator. If the resulting Pearson correlation
-#' matrix is not positive semi-definite, it is adjusted accordingly.
+#' Estimates a Pearson correlation matrix from multiple datasets via a rank-based
+#' procedure: (1) for each dataset (n × p), compute the Kendall's tau correlation
+#' matrix; (2) integrate the tau matrices across datasets (weighted by their sample
+#' sizes); (3) map the integrated tau to a Pearson correlation using
+#' r = sin((π/2) * τ); and (4) if the resulting Pearson matrix is not positive
+#' semi-definite, adjust it accordingly. This estimator is also practical for
+#' validation and parameter-tuning workflows where a robust cross-dataset correlation
+#' estimate is needed.
 #' 
 #' @param datasets A list of data matrices. Each matrix must have dimension n × p,
 #'   where n is the number of samples and p is the number of features.
@@ -81,9 +84,9 @@ positive_semi_definite_maker <- function(A) {
 #' 
 #' @return A positive semi-definite Pearson correlation matrix estimator.
 #' 
-#' @notes The method integrates information from multiple datasets using Kendall’s tau,
-#' ensuring a robust correlation estimate, and then corrects for positive semi-definiteness
-#' if needed.
+#' @note Integrates information across datasets using Kendall’s tau for robustness,
+#' then corrects the final Pearson correlation matrix for positive semi-definiteness
+#' when necessary.
 #' 
 #' @examples
 #' set.seed(123)
