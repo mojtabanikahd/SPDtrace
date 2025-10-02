@@ -48,25 +48,6 @@ convert_indices_to_edge <- function(upper_tri_indices, p, node_labels) {
 #'
 #' @examples
 #' \dontrun{
-#' # Example with covariance matrices for two classes
-#' set.seed(123)
-#' p <- 20
-#'
-#' # Construct covariance for class A
-#' Sigma_A <- diag(p) + 0.3 * (matrix(runif(p^2), p, p) > 0.8)
-#' Sigma_A <- (Sigma_A + t(Sigma_A)) / 2; diag(Sigma_A) <- 1
-#'
-#' # Construct covariance for class B
-#' Sigma_B <- Sigma_A + 0.2 * (matrix(runif(p^2), p, p) > 0.9)
-#' Sigma_B <- (Sigma_B + t(Sigma_B)) / 2; diag(Sigma_B) <- 1
-#'
-#' # Run SPDtrace
-#' result <- SPDtrace(CovA = Sigma_A, CovB = Sigma_B, sparsityLevel = 50, verbose = TRUE)
-#'
-#' # Inspect results
-#' print(result$last_differential_network)
-#' plot(result$lambda_sequence, type = "l", xlab = "Step", ylab = expression(lambda))
-#'
 #' # Alternative example using precision matrices for two classes
 #' d <- 10
 #' m <- 9
