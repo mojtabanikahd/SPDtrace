@@ -3,7 +3,6 @@
 S3method(print,SPDtrace_result)
 S3method(summary,SPDtrace_result)
 export(SPDtrace)
-export(instability_evaluator_of_solution_paths)
 export(weighted_rank_based_pearson_correlation_estimator)
 importFrom(Rcpp,evalCpp)
 importFrom(stats,cor)
