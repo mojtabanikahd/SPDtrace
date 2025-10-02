@@ -48,3 +48,6 @@ src/*.a
 src/*.lib
 src/*.exp
 src/*.ilk
+
+# Local scripts
+test.R
