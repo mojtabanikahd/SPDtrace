@@ -68,29 +68,34 @@ positive_semi_definite_maker <- function(A) {
 #' Weighted Rank-Based Pearson Correlation Estimator
 #' 
 #' @description
-#' Estimates Pearson correlation using the mapping of empirical Kendall's tau from 
-#' multiple datasets. This function is particularly useful for validation steps 
-#' in parameter tuning.
+#' This function estimates a Pearson correlation matrix from multiple datasets using a
+#' rank-based approach. For each dataset (n × p matrix), it computes the Kendall's tau
+#' correlation matrix, integrates them across datasets, and transforms the integrated
+#' Kendall's tau into a Pearson correlation estimator. If the resulting Pearson correlation
+#' matrix is not positive semi-definite, it is adjusted accordingly.
 #' 
-#' @param datasets List of data matrices, where each matrix represents a dataset
-#' @param random_set_ratio Ratio of samples to incorporate in estimation (default: 1)
+#' @param datasets A list of data matrices. Each matrix must have dimension n × p,
+#'   where n is the number of samples and p is the number of features.
+#' @param random_set_ratio Numeric in (0,1]. Proportion of samples used to compute the
+#'   estimator. Defaults to 1 (all samples).
 #' 
-#' @return Estimated Pearson correlation matrix
+#' @return A positive semi-definite Pearson correlation matrix estimator.
+#' 
+#' @notes The method integrates information from multiple datasets using Kendall’s tau,
+#' ensuring a robust correlation estimate, and then corrects for positive semi-definiteness
+#' if needed.
 #' 
 #' @examples
-#' \dontrun{
-#' # Create example datasets
 #' set.seed(123)
-#' n1 <- 100; n2 <- 80; p <- 10
-#' dataset1 <- matrix(rnorm(n1 * p), n1, p)
-#' dataset2 <- matrix(rnorm(n2 * p), n2, p)
+#' data1 <- matrix(rnorm(100 * 5), nrow = 100, ncol = 5)
+#' data2 <- matrix(rnorm(120 * 5), nrow = 120, ncol = 5)
+#' data_list <- list(data1, data2)
 #' 
-#' datasets <- list(dataset1, dataset2)
+#' # Estimate correlation matrix using all samples
+#' weighted_rank_based_pearson_correlation_estimator(data_list)
 #' 
-#' # Estimate correlation
-#' cor_matrix <- weighted_rank_based_pearson_correlation_estimator(datasets)
-#' print(cor_matrix[1:5, 1:5])
-#' }
+#' # Estimate correlation matrix using 50% of samples
+#' weighted_rank_based_pearson_correlation_estimator(data_list, random_set_ratio = 0.5)
 #' 
 #' @export
 weighted_rank_based_pearson_correlation_estimator <- function(datasets, random_set_ratio = 1) {
