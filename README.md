@@ -74,7 +74,7 @@ summary(result)
 - `positive_semi_definite_maker()`: Ensure matrix positive semi-definiteness
 - `weighted_rank_based_pearson_correlation_estimator()`: Estimate correlations
 - `instability_evaluator_of_solution_paths()`: Evaluate solution stability
-- `fisher_test()`: Perform Fisher's exact test for enrichment
+ 
 
 ## Documentation
 
@@ -115,13 +115,7 @@ results <- run_first_scenario(
 print(results$performance_summary)
 ```
 
-### Biological Validation
-
-```r
-# Perform enrichment analysis (using user-provided gene sets)
-enrichment <- fisher_test(all_genes, hub_genes, functional_genes)
-print(enrichment$p.value)
-```
+ 
 
 ## Real-World Applications
 

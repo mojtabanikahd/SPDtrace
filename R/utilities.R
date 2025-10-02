@@ -213,62 +213,6 @@ instability_evaluator_of_solution_paths <- function(solution_paths, number_of_no
     set_index[max_index] <- set_index[max_index] + 1
   }
   
-  instability_results
+instability_results
 }
 
-#' Fisher's Exact Test for Gene Set Enrichment
-#' 
-#' @description
-#' Performs Fisher's exact test to assess enrichment of hub genes in functional gene sets.
-#' This is commonly used in biological network analysis.
-#' 
-#' @param all_genes Vector of all genes in the analysis
-#' @param hub_genes Vector of hub genes (e.g., high-degree nodes)
-#' @param functional_genes Vector of functional genes (e.g., known pathway genes)
-#' 
-#' @return List containing contingency table and test results
-#' 
-#' @examples
-#' \dontrun{
-#' # Example gene sets
-#' all_genes <- paste0("Gene", 1:1000)
-#' hub_genes <- paste0("Gene", sample(1:1000, 50))
-#' functional_genes <- paste0("Gene", sample(1:1000, 100))
-#' 
-#' result <- fisher_test(all_genes, hub_genes, functional_genes)
-#' print(result$p.value)
-#' }
-#' 
-#' @export
-fisher_test <- function(all_genes, hub_genes, functional_genes) {
-  if (!is.vector(all_genes) || !is.vector(hub_genes) || !is.vector(functional_genes)) {
-    stop("All inputs must be vectors")
-  }
-  
-  functional_index <- all_genes %in% functional_genes
-  hub_index <- all_genes %in% hub_genes
-  
-  # Create contingency table
-  #                    In functional set | Not in functional set
-  # In hub set         a                | b
-  # Not in hub set     c                | d
-  
-  a <- sum(hub_index & functional_index)  # Hub genes in functional set
-  b <- sum(hub_index & !functional_index) # Hub genes not in functional set
-  c <- sum(!hub_index & functional_index) # Non-hub genes in functional set
-  d <- sum(!hub_index & !functional_index) # Non-hub genes not in functional set
-  
-  contingency_table <- matrix(c(a, b, c, d), nrow = 2, byrow = TRUE)
-  colnames(contingency_table) <- c("In functional set", "Not in functional set")
-  rownames(contingency_table) <- c("In hub set", "Not in hub set")
-  
-  # Perform Fisher's exact test
-  test_result <- fisher.test(contingency_table, alternative = "greater")
-  
-  list(
-    contingency_table = contingency_table,
-    p.value = test_result$p.value,
-    odds_ratio = test_result$estimate,
-    conf.int = test_result$conf.int
-  )
-}

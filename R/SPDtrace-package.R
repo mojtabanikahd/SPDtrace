@@ -5,5 +5,5 @@
 #' @keywords internal
 #' @useDynLib SPDtrace, .registration = TRUE
 #' @importFrom Rcpp evalCpp
-#' @importFrom stats cor fisher.test median
+#' @importFrom stats cor median
 "_PACKAGE"

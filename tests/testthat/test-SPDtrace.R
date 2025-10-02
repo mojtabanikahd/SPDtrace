@@ -95,30 +95,7 @@ test_that("Print and summary methods work", {
   expect_output(summary(result), "SPDtrace Result Summary")
 })
 
-test_that("Fisher test function works correctly", {
-  # Test data
-  all_genes <- paste0("Gene", 1:1000)
-  hub_genes <- paste0("Gene", sample(1:1000, 50))
-  functional_genes <- paste0("Gene", sample(1:1000, 100))
-  
-  # Run test
-  result <- fisher_test(all_genes, hub_genes, functional_genes)
-  
-  # Check output structure
-  expect_true(is.list(result))
-  expect_true(all(c("contingency_table", "p.value", "odds_ratio", "conf.int") %in% names(result)))
-  
-  # Check types
-  expect_true(is.matrix(result$contingency_table))
-  expect_true(is.numeric(result$p.value))
-  expect_true(is.numeric(result$odds_ratio))
-  expect_true(is.numeric(result$conf.int))
-  
-  # Check values
-  expect_true(result$p.value >= 0 && result$p.value <= 1)
-  expect_true(result$odds_ratio > 0)
-  expect_true(length(result$conf.int) == 2)
-})
+ 
 
 # Test edge cases
 test_that("Edge cases are handled correctly", {

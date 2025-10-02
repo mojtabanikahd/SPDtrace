@@ -58,7 +58,7 @@ SPDtrace_pkg/
 - `positive_semi_definite_maker()`: Ensure matrix positive semi-definiteness
 - `weighted_rank_based_pearson_correlation_estimator()`: Estimate correlations
 - `instability_evaluator_of_solution_paths()`: Evaluate solution stability
-- `fisher_test()`: Perform Fisher's exact test for enrichment
+ 
 
 ### 3. [Removed] Simulation Functions
 
